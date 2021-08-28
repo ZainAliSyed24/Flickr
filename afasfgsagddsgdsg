@@ -1,0 +1,130 @@
+import React, { FunctionComponent,  } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  FlatList,
+  StatusBar,
+} from 'react-native';
+
+
+const DATA = [
+  {
+    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+    title: 'First Item',
+  },
+  {
+    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+    title: 'Second Item',
+  },
+  {
+    id: '58694a0f-3da1-471f-bd96-145571e29d72',
+    title: 'Third Item',
+  },
+  {
+    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+    title: 'First Item',
+  },
+  {
+    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+    title: 'Second Item',
+  },
+  {
+    id: '58694a0f-3da1-471f-bd96-145571e29d72',
+    title: 'Third Item',
+  },
+  {
+    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+    title: 'First Item',
+  },
+  {
+    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+    title: 'Second Item',
+  },
+  {
+    id: '58694a0f-3da1-471f-bd96-145571e29d72',
+    title: 'Third Item',
+  },
+  {
+    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+    title: 'First Item',
+  },
+  {
+    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+    title: 'Second Item',
+  },
+  {
+    id: '58694a0f-3da1-471f-bd96-145571e29d72',
+    title: 'Third Item',
+  },
+];
+
+const Item = ({ title }) => (
+    <View style={styles.item}>
+      <Text style={styles.title}>{title}</Text>
+    </View>
+);
+
+
+const App: FunctionComponent = () => {
+
+  const renderItem = ({ item }) => (
+    <View style={styles.check3}>
+      <Item title={item.title} />
+    </View>
+  );
+
+  return (
+    <View style={styles.check}>
+      <TextInput
+        placeholder="Username"
+        placeholderColor="#c4c3cb"
+        style={styles.loginFormTextInput}
+      />
+      <FlatList
+        data={DATA}
+        renderItem={renderItem}
+        keyExtractor={item => item.id}
+        numColumns={2}
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  item: {
+    backgroundColor: '#f9c2ff',
+    padding: 10,
+    marginVertical: 5,
+    borderWidth: 1,
+    height: 140,
+    justifyContent: 'space-between',
+  },
+  title: {
+    fontSize: 32,
+  },
+  loginFormTextInput: {
+    height: 43,
+    fontSize: 14,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#eaeaea',
+    backgroundColor: '#fafafa',
+    paddingLeft: 10,
+    marginTop: 5,
+    marginBottom: 25,
+  },
+  check:{
+    width: "100%",
+    paddingHorizontal: 15,
+    paddingTop: 30,
+  },
+  check3: {
+    width: "50%",
+    paddingHorizontal: 5,
+
+  },
+});
+
+export default App;
