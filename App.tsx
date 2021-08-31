@@ -5,16 +5,13 @@ import {
   View,
   TextInput,
   FlatList,
-  StatusBar,
-  Image,
-  Alert,
 } from 'react-native';
-// import { SearchBar } from 'react-native-elements';
 import { User } from './interfaces';
 import axios, {AxiosResponse} from 'axios';
 import { url } from 'inspector';
 import FastImage from 'react-native-fast-image';
 import ButtonView from './src/reuseableComponents/ButtonView';
+import { createRef } from 'react';
 
 
 const App: React.FC = () => {
@@ -24,7 +21,10 @@ const App: React.FC = () => {
   const [userData, setUserData] = useState<User[]>([]);
   const [showList, setShowList] = useState<boolean>(false);
   const [searchListData, setSearchListData] = useState<any[]>([]);
-  // const modalRef = useRef<HTMLHeadingElement>(null);
+
+  const myRef = React.useRef<any>(null)
+
+
 
   const fetchUser = async () =>{
     const {data} = await axios.get('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=11c40ef31e4961acf4f98c8ff4e945d7&format=json&nojsoncallback=1&text=kittens');
@@ -43,55 +43,55 @@ const App: React.FC = () => {
 
   const YourImage = ({farm, title, id, server, secret}) => {
     // console.log("YourImage", item)
-  return(
-    <FastImage
-        source={{
-          uri: `http://farm${farm}.static.flickr.com/${server}/${id}_${secret}.jpg}`,
-            headers: { Authorization: 'someAuthToken' },
-            priority: FastImage.priority.normal,
-        }}
-        style={styles.imgs}
-    />
-)}
+    return(
+      <FastImage
+          source={{
+            uri: `http://farm${farm}.static.flickr.com/${server}/${id}_${secret}.jpg}`,
+              headers: { Authorization: 'someAuthToken' },
+              priority: FastImage.priority.normal,
+          }}
+          style={styles.imgs}
+      />
+    )
+  };
 
   const renderItem = ({ item }) => { 
     // console.log("item.photos i photo ya nahi", item)
 
-  return(
-    <View style={styles.check3}>
-      {YourImage(item)}
-      <Text>{item.title.length <= 20 ? item.title : item.title.slice(0, 20)}</Text>
-    </View>
-  )};
+    return(
+      <View style={styles.check3}>
+        {YourImage(item)}
+        <Text>{item.title.length <= 20 ? item.title : item.title.slice(0, 20)}</Text>
+      </View>
+    )
+  };
 
   const renderSearchList = ({ item }) => { 
-    // console.log("item.photos i photo ya nahi", item)
-
-  return(
-    <ButtonView
-      onPress={() => {
-        Alert.alert('asdfs')
-        // console.log("item.photos i photo ya nahi", item)
-        // setSearchText(item)
-        // setSearch(item)
-      }}
-      style={{paddingVertical: 10}}
-    >
-      <Text>{item}</Text>
-    </ButtonView>
-  )};
+    // console.log("item.photos i photo ya nahi kuch", item)
+    return(
+      <ButtonView
+        onPress={() => {
+          setSearchText(item)
+          setSearch(item)
+        }}
+      >
+        <Text style={{paddingVertical: 5}}>{item}</Text>
+      </ButtonView>
+    )
+  };
 
   return (
     <View style={styles.check}>
       <View style={{flexDirection: 'row'}}>
         <TextInput
+          ref={myRef}
           placeholder="Search Here..."
           value={searchText}
           onChangeText={updateSearch}
           placeholderColor="#c4c3cb"
           style={styles.loginFormTextInput}
           onFocus={() => setShowList(true)}
-          onBlur={() => setShowList(false)}
+          // onBlur={() => setShowList(false)}
         />
         <ButtonView
           style={styles.btnStyle}
@@ -105,9 +105,13 @@ const App: React.FC = () => {
         <ButtonView
           style={styles.btnStyle1}
           onPress={() => {
+            console.log("myRef", myRef)
             setSearch(searchText)
             setShowList(false)
-            setSearchListData([...searchListData, searchText])
+            if(searchText.trim() != "" && !searchListData.includes(searchText)){
+              
+              setSearchListData([...searchListData, searchText])
+            }
             }}>
           <Text>Ok</Text>
         </ButtonView>
@@ -119,31 +123,22 @@ const App: React.FC = () => {
           keyExtractor={item => item.id}
         />
       </View> : null}
+
       <FlatList
         // data={userData.map((item) => item.title.toLowerCase() == search.toLowerCase() ? item : userData)}
         data={search.length > 0 ? userData.filter(({title}) => title.toLowerCase().includes(search.toLowerCase())) : userData}
         renderItem={renderItem}
         keyExtractor={item => item.id}
         numColumns={2}
+        style={styles.check2}
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  item: {
-    backgroundColor: '#f9c2ff',
-    padding: 10,
-    marginVertical: 5,
-    borderWidth: 1,
-    height: 140,
-    justifyContent: 'space-between',
-  },
-  title: {
-    fontSize: 32,
-  },
   loginFormTextInput: {
-    height: 43,
+    height: 50,
     fontSize: 14,
     borderTopLeftRadius: 5,
     borderBottomLeftRadius: 5,
@@ -153,7 +148,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fafafa',
     paddingLeft: 10,
     marginTop: 5,
-    marginBottom: 25,
     width: '75%'
   },
   check:{
@@ -168,22 +162,20 @@ const styles = StyleSheet.create({
   },
 
   check2:{
-    // backgroundColor: '#fff',
+    marginBottom: "auto",
   },
   imgs:{
     width: "100%",
     height: 140,
     borderRadius: 10,
-    // marginBottom: 20,
   },
   btnStyle:{
-    height: 43,
+    height: 50,
     fontSize: 14,
     borderWidth: 1,
     borderColor: '#eaeaea',
     backgroundColor: '#fafafa',
     marginTop: 5,
-    marginBottom: 25,
     justifyContent: 'center',
     textAlign: 'center',
     alignItems: 'center',
@@ -191,16 +183,15 @@ const styles = StyleSheet.create({
     borderRightWidth: 0,
   },
   btnStyle1:{
-    height: 43,
+    height: 50,
     fontSize: 14,
-    // borderRadius: 5,
     borderTopRightRadius: 5,
     borderBottomRightRadius: 5,
     borderWidth: 1,
     borderColor: '#eaeaea',
     backgroundColor: '#fafafa',
     marginTop: 5,
-    marginBottom: 25,
+    marginBottom: 5,
     justifyContent: 'center',
     textAlign: 'center',
     alignItems: 'center',
